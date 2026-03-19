@@ -36,4 +36,28 @@ public class MusicService {
         }
         return styleList;
     }
+
+    public boolean musicUpload(Music music) {
+        String connectionString = "mongodb://localhost:27017";
+        try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+
+            MongoDatabase database = mongoClient.getDatabase("my_musics");
+            MongoCollection<Document> collection = database.getCollection("musics");
+
+            Music m = new Music(music.getTitulo(), music.getEstilo(), music.getArtista());
+            collection.insertOne(Document.parse(new Gson().toJson(m)));
+            return true;
+        }catch (Exception e) {
+                return false;
+            }
+    }
+
+    public Style getStyleByName(String nome) {
+        List<Style> styles = findMusicStyles();
+        for (Style s : styles) {
+            if(s.getNome().equalsIgnoreCase(nome))
+                return s;
+        }
+        return null;
+    }
 }
