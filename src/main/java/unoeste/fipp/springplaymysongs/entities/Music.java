@@ -9,6 +9,13 @@ public class Music {
         this.artista = artista;
     }
 
+    public Music(String titulo, String estilo, String artista, String musicFileName) {
+        this.titulo = titulo;
+        this.estilo = estilo;
+        this.artista = artista;
+        this.musicFileName = musicFileName;
+    }
+
     public String getTitulo() {
         return titulo;
     }

@@ -36,10 +36,14 @@ public class MusicRestController {
     }
 
     @PostMapping("music-upload")
-    public ResponseEntity<Object> addMusic(String titulo, String estilo, String artista) {
+    public ResponseEntity<Object> addMusic(String titulo, String estilo, String artista, MultipartFile arquivo) {
 
         if(titulo == null || titulo.isEmpty()) {
             return ResponseEntity.badRequest().body(new Erro("Música sem título",""));
+        }
+
+        if (arquivo == null || arquivo.isEmpty()) {
+            return ResponseEntity.badRequest().body(new Erro("Arquivo não enviado", ""));
         }
 
         Style style = musicService.getStyleByName(estilo);
@@ -49,7 +53,7 @@ public class MusicRestController {
 
         try {
             Music music = new Music(titulo, estilo, artista);
-            boolean sucesso = musicService.musicUpload(music);
+            boolean sucesso = musicService.musicUpload(music, arquivo);
             if(!sucesso) {
                 return ResponseEntity.badRequest().body(new Erro("Erro ao gravar no banco!",""));
             }
