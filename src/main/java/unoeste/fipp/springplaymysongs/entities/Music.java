@@ -1,7 +1,7 @@
 package unoeste.fipp.springplaymysongs.entities;
 
 public class Music {
-    private String titulo, estilo, artista, musicFileName;
+    private String titulo, estilo, artista, musicFileName, url;
 
     public Music(String titulo, String estilo, String artista) {
         this.titulo = titulo;
@@ -46,5 +46,13 @@ public class Music {
 
     public void setMusicFileName(String musicFileName) {
         this.musicFileName = musicFileName;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

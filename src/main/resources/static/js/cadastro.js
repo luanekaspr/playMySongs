@@ -49,8 +49,6 @@ async function carregarEstilos() {
             option.textContent = estilo.nome;
             selectEstilo.appendChild(option);
         });
-
-        console.log('Estilos carregados:', estilos.length);
     } catch (error) {
         console.error('Erro ao carregar estilos:', error);
         const selectEstilo = document.getElementById('estilo');

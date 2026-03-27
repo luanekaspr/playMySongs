@@ -1,5 +1,6 @@
 package unoeste.fipp.springplaymysongs.restcontrollers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,23 @@ public class MusicRestController {
     @Autowired
     private MusicService musicService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @GetMapping("find-musics")
-    public ResponseEntity<Object> findMusic(String keyword){
-        if(!keyword.isEmpty()){
-            List<Music> musicList=musicService.findMusicsByKeyWord(keyword);
-            return ResponseEntity.ok(musicList);
+    public ResponseEntity<Object> findMusics(@RequestParam("keyword") String keyword) {
+        List<Music> musicas = musicService.findMusicsByKeyWord(keyword);
+
+        if (musicas == null || musicas.isEmpty()) {
+            return ResponseEntity.badRequest().body(new Erro("Nenhuma música encontrada", ""));
         }
-        return ResponseEntity.badRequest().body(new Erro("Música não encontrada!",""));
+
+        for (Music music : musicas) {
+            String url = getHostStatic() + music.getMusicFileName();
+            music.setUrl(url);
+        }
+
+        return ResponseEntity.ok(musicas);
     }
 
     @GetMapping("get-music-styles")
@@ -61,5 +72,9 @@ public class MusicRestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new Erro("Erro ao gravar!",""));
         }
+    }
+
+    private String getHostStatic() {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + "/uploads/";
     }
 }
