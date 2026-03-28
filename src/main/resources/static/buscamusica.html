@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/buscamusica.js" defer></script>
+    <meta charset="UTF-8">
+    <title>Pesquisa de Músicas</title>
+</head>
+<body>
+
+<header>
+    <h1>PlayMySongs</h1>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="cadastro.html">Cadastrar Música</a>
+    </nav>
+</header>
+
+<main>
+    <h2>Buscar Músicas</h2>
+    <p>Pesquise por título, artista ou estilo musical</p>
+
+    <section id="busca">
+        <input type="text" id="keyword" placeholder="Ex: Rock, Queen, We will Rock you...">
+        <button onclick="pesquisarMusicas()">Buscar</button>
+    </section>
+
+    <section id="resultados">
+        <h3>Resultados</h3>
+        <span id="contador"></span>
+        <div id="lista-musicas">
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

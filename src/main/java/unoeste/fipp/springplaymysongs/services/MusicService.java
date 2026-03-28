@@ -23,10 +23,53 @@ public class MusicService {
     private static final String UPLOAD_FOLDER = "src/main/resources/static/uploads/";
 
     public List<Music> findMusicsByKeyWord(String keyword){
+        String connectionString = "mongodb://localhost:27017";
+
+        try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+
+            MongoDatabase database = mongoClient.getDatabase("my_musics");
+            MongoCollection<Document> collection = database.getCollection("musics");
+
+            Document filter = new Document("$or", Arrays.asList(
+                    new Document("titulo",  new Document("$regex", keyword).append("$options", "i")),
+                    new Document("estilo",  new Document("$regex", keyword).append("$options", "i")),
+                    new Document("artista", new Document("$regex", keyword).append("$options", "i"))
+            ));
+
+            List<Music> musicList = new ArrayList<>();
+            MongoCursor<Document> mongoCursor = collection.find(filter).iterator(); // filter vai no find!
+
+            while(mongoCursor.hasNext()) {
+                musicList.add(new Gson().fromJson(mongoCursor.next().toJson(), Music.class));
+            }
+            return musicList;
+
+        } catch (Exception e) {
+            System.err.println("Erro ao encontrar músicas: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Music> findAllMusics() {
         List<Music> musicList = new ArrayList<>();
-        musicList.add(new Music("Jetski","funk","Pedro Sampaio"));
-        musicList.add(new Music("Para sempre com você","sertanejo","Jorge e Mateus"));
-        return musicList;
+        String connectionString = "mongodb://localhost:27017";
+
+        try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+            MongoDatabase database = mongoClient.getDatabase("my_musics");
+            MongoCollection<Document> collection = database.getCollection("musics");
+
+            MongoCursor<Document> mongoCursor = collection.find().iterator();
+
+            while (mongoCursor.hasNext()) {
+                musicList.add(new Gson().fromJson(mongoCursor.next().toJson(), Music.class));
+            }
+            return musicList;
+
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar músicas: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public List<Style> findMusicStyles() {
@@ -68,6 +111,7 @@ public class MusicService {
 
             Music m = new Music(music.getTitulo(), music.getEstilo(),
                     music.getArtista(), nomeArquivo);
+            m.setUrl("/uploads/" + nomeArquivo);
 
             collection.insertOne(Document.parse(new Gson().toJson(m)));
             return true;

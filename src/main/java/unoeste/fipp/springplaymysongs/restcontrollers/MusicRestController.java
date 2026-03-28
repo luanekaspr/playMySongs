@@ -26,19 +26,20 @@ public class MusicRestController {
 
     @GetMapping("find-musics")
     public ResponseEntity<Object> findMusics(@RequestParam("keyword") String keyword) {
-        List<Music> musicas = musicService.findMusicsByKeyWord(keyword);
+        List<Music> musics = musicService.findMusicsByKeyWord(keyword);
 
-        if (musicas == null || musicas.isEmpty()) {
+        if (musics == null || musics.isEmpty()) {
             return ResponseEntity.badRequest().body(new Erro("Nenhuma música encontrada", ""));
         }
 
-        for (Music music : musicas) {
+        for (Music music : musics) {
             String url = getHostStatic() + music.getMusicFileName();
             music.setUrl(url);
         }
 
-        return ResponseEntity.ok(musicas);
+        return ResponseEntity.ok(musics);
     }
+
 
     @GetMapping("get-music-styles")
     public ResponseEntity<Object> getStyles() {
@@ -72,6 +73,18 @@ public class MusicRestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new Erro("Erro ao gravar!",""));
         }
+    }
+
+    @GetMapping("get-all-musics")
+    public ResponseEntity<Object> getAllMusics() {
+        List<Music> musicas = musicService.findAllMusics();
+
+        for (Music music : musicas) {
+            String url = getHostStatic() + music.getMusicFileName();
+            music.setUrl(url);
+        }
+
+        return ResponseEntity.ok(musicas);
     }
 
     private String getHostStatic() {
