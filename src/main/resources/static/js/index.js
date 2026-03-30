@@ -14,7 +14,7 @@ async function carregarMusicas() {
 
     data.forEach(music => {
         const extensao = music.musicFileName?.split('.').pop().toLowerCase();
-        const mimeType = extensao === 'ogg' ? 'audio/ogg' : 'audio/mp3';
+        const mimeType = extensao === 'ogg' ? 'audio/ogg' : 'audio/mpeg';
 
         const card = document.createElement('div');
         card.innerHTML = `

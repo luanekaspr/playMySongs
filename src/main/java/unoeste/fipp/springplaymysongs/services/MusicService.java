@@ -37,7 +37,7 @@ public class MusicService {
             ));
 
             List<Music> musicList = new ArrayList<>();
-            MongoCursor<Document> mongoCursor = collection.find(filter).iterator(); // filter vai no find!
+            MongoCursor<Document> mongoCursor = collection.find(filter).iterator();
 
             while(mongoCursor.hasNext()) {
                 musicList.add(new Gson().fromJson(mongoCursor.next().toJson(), Music.class));
@@ -88,9 +88,7 @@ public class MusicService {
 
     public boolean musicUpload(Music music, MultipartFile file) {
         String connectionString = "mongodb://localhost:27017";
-
         try (MongoClient mongoClient = MongoClients.create(connectionString)) {
-
             MongoDatabase database = mongoClient.getDatabase("my_musics");
             MongoCollection<Document> collection = database.getCollection("musics");
 
@@ -98,11 +96,13 @@ public class MusicService {
                     music.getArtista(), file.getOriginalFilename());
 
             try {
-                File uploadFolder = new File(UPLOAD_FOLDER);
+                String uploadPath = new File("src/main/resources/static/uploads/").getAbsolutePath();
+                File uploadFolder = new File(uploadPath);
                 if (!uploadFolder.exists()) {
                     uploadFolder.mkdirs();
                 }
-                file.transferTo(new File(uploadFolder.getAbsolutePath() + File.separator + nomeArquivo));
+                File destino = new File(uploadFolder.getAbsolutePath() + File.separator + nomeArquivo);
+                file.transferTo(destino.getAbsoluteFile()); // .getAbsoluteFile() é o que resolve o problema!
             } catch (Exception e) {
                 System.err.println("Erro ao armazenar o arquivo: " + e.getMessage());
                 e.printStackTrace();
@@ -112,7 +112,6 @@ public class MusicService {
             Music m = new Music(music.getTitulo(), music.getEstilo(),
                     music.getArtista(), nomeArquivo);
             m.setUrl("/uploads/" + nomeArquivo);
-
             collection.insertOne(Document.parse(new Gson().toJson(m)));
             return true;
 

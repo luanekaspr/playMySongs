@@ -9,7 +9,7 @@ async function pesquisarMusicas(){
 function carregarmusicas(data){
     const lista = document.getElementById("lista-musicas");
     const contador = document.getElementById("contador");
-    lista.innerHTML = ''; // era list, corrigido pra lista
+    lista.innerHTML = '';
 
     if(!data || data.length === 0){
         lista.innerHTML = '<p>Nenhuma música encontrada.</p>';
