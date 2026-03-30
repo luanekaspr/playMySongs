@@ -55,3 +55,16 @@ async function carregarEstilos() {
         selectEstilo.innerHTML = '<option value="">Erro ao carregar estilos</option>';
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    carregarEstilos();
+
+    const form = document.getElementById("musicForm");
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+        cadastrarMusica();
+    });
+
+});
